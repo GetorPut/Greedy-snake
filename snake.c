@@ -4,6 +4,7 @@
 #include "8x8lattice.h"
 #include "snake.h"
 
+//根据单片机设置引脚
 sbit KeyIn1 = P2^4;
 sbit KeyIn2 = P2^5;
 sbit KeyIn3 = P2^6;
@@ -44,7 +45,7 @@ unsigned char tCount=0;
 unsigned char speedLevel=80;
 
 //**********************************//
-//启动贪吃蛇游戏（主函数）
+//启动贪吃蛇游戏
 void startSnake()
 {	
 	initSnake();
@@ -70,7 +71,6 @@ void startSnake()
 //初始化蛇的位置等
 static void initSnake()
 {
-	//清除内存数据
 	unsigned char i;
 	for(i=0; i<SNAKE_Max_Long; i++)
 	{
@@ -78,7 +78,6 @@ static void initSnake()
 		snake.y[i]=-1;
 	}
 	
-	//初始化蛇参数
 	snake.Long=2;	// 初始化蛇的长度为两节
 	snake.Life=1;	//初始化蛇活着
 	snake.Dir=right;
@@ -114,7 +113,6 @@ static void drawSnake()
 //方向按键处理
 static void changeDir(unsigned int key)
 {  	
-	// 方向按键的规则
 	switch(key)
 	{
 		case 4:	 if(snake.Dir != down)	snake.Dir=up; 		break;
@@ -130,14 +128,12 @@ static void runSnake()
 {
 	unsigned char i;
 	
-	// 蛇身体坐标移动，蛇头方向坐标逐渐向蛇尾方向移动
 	for(i=snake.Long; i>0; i--)
 	{	
 		snake.y[i]=snake.y[i-1];
 		snake.x[i]=snake.x[i-1];
 	}
 	
-	// 重新获得蛇的头部位置
 	switch(snake.Dir)
 	{	
 		case up:	snake.y[0]-=1; break;
@@ -150,23 +146,23 @@ static void runSnake()
 //碰撞检测
 static void Collision_Monitoring()
 {
-		uchar i=0;
-		// 限定蛇活动范围，超范围就dead
-		if((snake.x[0]>(WIDTH-1)) || (snake.x[0]<0) || (snake.y[0]>(LENGTH-1)) || (snake.y[0]<0))
+	uchar i=0;
+
+	if((snake.x[0]>(WIDTH-1)) || (snake.x[0]<0) || (snake.y[0]>(LENGTH-1)) || (snake.y[0]<0))
+	{
+		snake.Life=0;			
+		snake.Dir=right;	
+	}
+
+	for(i=4; i<=snake.Long; i++)
+	{
+		if(snake.x[i-1]==snake.x[0] && snake.y[i-1]==snake.y[0])
 		{
-			snake.Life=0;			
+			snake.Life=0;	
 			snake.Dir=right;	
 		}
-		// 蛇自杀检测
-		for(i=4; i<=snake.Long; i++)
-		{
-			if(snake.x[i-1]==snake.x[0] && snake.y[i-1]==snake.y[0])
-			{
-				snake.Life=0;	
-				snake.Dir=right;	
-			}
-		}
-	// 蛇吃到食物
+	}
+
 	if(snake.x[0]==food.x && snake.y[0]==food.y)
 	{
 		snake.Long++;
@@ -191,19 +187,19 @@ unsigned int KeyCheck (void)
 		}
 		if(KeyIn2 == 0)
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn2 == 0)
 			   k=2;
 		}
 		if(KeyIn3 == 0)
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn3 == 0)
 			   k=3;
 		}	
-		if(KeyIn4 == 0)
+ 		if(KeyIn4 == 0)
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn4 == 0)
 			   k=4;
 		}
@@ -216,19 +212,19 @@ unsigned int KeyCheck (void)
 		KeyOut4 = 1;
 		if(KeyIn1 == 0) 
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn1 == 0)
 			   k=5;
 		}
 		if(KeyIn2 == 0)
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn2 == 0)
 			   k=6;
 		}
 		if(KeyIn3 == 0)
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn3 == 0)
 			   k=7;
 		}	
@@ -247,7 +243,7 @@ unsigned int KeyCheck (void)
 		KeyOut4 = 1;
 		if(KeyIn1 == 0) 
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn1 == 0)
 			   k=9;
 		}
@@ -259,44 +255,44 @@ unsigned int KeyCheck (void)
 		}
 		if(KeyIn3 == 0)
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn3 == 0)
 			   k=11;
 		}	
 		if(KeyIn4 == 0)
-		{
-				delayMs(100);
+ 		{
+			delayMs(100);
 			if(KeyIn4 == 0)
 			   k=12;
 		}
 		while((KeyIn1 == 0)||(KeyIn2 == 0)||
 		      (KeyIn3 == 0)||(KeyIn4 == 0));
 
-		KeyOut1 = 1;
+ 		KeyOut1 = 1;
 		KeyOut2 = 1;
 		KeyOut3 = 1;
 		KeyOut4 = 0;
 		if(KeyIn1 == 0) 
 		{
-				delayMs(100);
-			if(KeyIn1 == 0)
+			delayMs(100);
+		        if(KeyIn1 == 0)
 			   k=13;
 		}
 		if(KeyIn2 == 0)
 		{
-				delayMs(100);
-			if(KeyIn2 == 0)
-			   k=14;
+			delayMs(100);
+ 			if(KeyIn2 == 0)
+			    k=14;
 		}
 		if(KeyIn3 == 0)
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn3 == 0)
 			   k=15;
 		}	
 		if(KeyIn4 == 0)
 		{
-				delayMs(100);
+			delayMs(100);
 			if(KeyIn4 == 0)
 			   k=16;
 		}
